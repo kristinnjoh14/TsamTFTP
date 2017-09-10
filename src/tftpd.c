@@ -1,38 +1,39 @@
 #include <sys/socket.h>
+#include <sys/time.h>
+#include <ctype.h>
+#include <sys/types.h>
 #include <stdio.h>
 #include <netinet/in.h>
 #include <string.h> 
 
 int main(int argc, char const *argv[])
 {
-	printf("%s\n", argv[1]);
-	int testSocket = socket(AF_INET, SOCK_DGRAM, 0);
+	int packetSize = 512;
+	int socket = socket(AF_INET, SOCK_DGRAM, 0);
 
 	struct sockaddr_in servaddr;
-		
-	char str[100];
+
+	int portno = argv[1];
+	char directory[512];
+	strcpy(directory, argv[2]);
+
+	printf("%s %s", portno, directory);
+
+	char msg[packetSize];
 	bzero( &servaddr, sizeof(servaddr));
 
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htons(INADDR_ANY);
-	servaddr.sin_port = htons(argv[1]);
+	servaddr.sin_port = htons(portno);
 
-	bind(testSocket, (struct sockaddr *) &servaddr, sizeof(servaddr));
+	struct timeval timeout;
+	timeout.tv_sec = 30;
+	timeout.tv_usec = 0;
+	setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
 
-	listen(testSocket, 10);
+	bind(socket, (struct sockaddr *) &servaddr, (socklen_t) sizeof(servaddr));
 
-	int comm_fd = accept(testSocket, (struct sockaddr*) NULL, NULL);
 
-	while(1)
-	{
-		bzero( str, 100);
-
-		read(comm_fd,str,100);
-
-		printf("Echoing back - %d",comm_fd);
-
-		write(comm_fd, str, strlen(str)+1);
-	}
 
 	return argc;
 }
