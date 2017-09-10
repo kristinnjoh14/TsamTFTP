@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
 	struct sockaddr_in servaddr, client;
 
 	int portno = atoi(argv[1]);
-	char directory[512];
+	char* directory;
 	strcpy(directory, argv[2]);
 	char payload[PACKET_SIZE-4];
 
@@ -70,7 +70,9 @@ int main(int argc, char const *argv[])
 			request->size = recvfrom(sockfd, &(request->packet), PACKET_SIZE,0,(struct sockaddr *)&(request->client), sizeof(struct sockaddr_in));
 			request->packet.opcode = ntohs(request->packet.opcode);
 			
-			if(request->packet.opcode != RRQ)
+			if(request->packet.opcode == 1) {
+
+			}
 		}
 	}
 }
