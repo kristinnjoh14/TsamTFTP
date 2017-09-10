@@ -34,7 +34,7 @@ int main(int argc, char const *argv[])
 	struct sockaddr_in servaddr, client;
 
 	int portno = atoi(argv[1]);
-	char* directory;
+	char* directory = NULL;
 	strcpy(directory, argv[2]);
 	char payload[PACKET_SIZE-4];
 
@@ -67,7 +67,7 @@ int main(int argc, char const *argv[])
 			request = (struct tftpRequest *)malloc(sizeof(struct tftpRequest));
 			bzero(request, sizeof(request));
 
-			request->size = recvfrom(sockfd, &(request->packet), PACKET_SIZE,0,(struct sockaddr *)&(request->client), sizeof(struct sockaddr_in));
+			request->size = recvfrom(sockfd, &(request->packet), PACKET_SIZE,0,(struct sockaddr *)&(request->client), (socklen_t *) sizeof(struct sockaddr_in));
 			request->packet.opcode = ntohs(request->packet.opcode);
 			
 			if(request->packet.opcode == 1) {
