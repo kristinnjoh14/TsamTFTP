@@ -13,7 +13,7 @@ static const int PACKET_SIZE = 512;
 struct tftpPacket {
 	unsigned short opcode;
 	unsigned short packetno;
-	char payload[PACKET_SIZE-4];
+	char payload[508];
 };
 
 struct tftpRequest {
@@ -69,7 +69,8 @@ int main(int argc, char const *argv[])
 
 			request->size = recvfrom(sockfd, &(request->packet), PACKET_SIZE,0,(struct sockaddr *)&(request->client), sizeof(struct sockaddr_in));
 			request->packet.opcode = ntohs(request->packet.opcode);
-			printf("%d", request->packet.opcode);
+			
+			if(request->packet.opcode != RRQ)
 		}
 	}
 }
