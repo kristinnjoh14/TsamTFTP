@@ -7,7 +7,6 @@
 #include <string.h>
 #include <assert.h>
 
-//Gera #define ef gcc fer í f'ylu
 static const int PACKET_SIZE = 512;
 
 struct tftpPacket {
@@ -53,11 +52,11 @@ int main(int argc, char const *argv[])
 
 	printf("Server listening on port %d\n", portno);
 	while(1) {
-		fd_set readies;
-		FD_ZERO(&readies);
-		FD_SET(sockfd, &readies);
+		fd_set ready;
+		FD_ZERO(&ready);
+		FD_SET(sockfd, &ready);
 
-		int ret = select(sockfd + 1, &readies, NULL, NULL, &timeout);
+		int ret = select(sockfd + 1, &ready, NULL, NULL, &timeout);
 
 		if(ret == -1) {
 			printf("Error beep boop\n");
@@ -71,7 +70,14 @@ int main(int argc, char const *argv[])
 			request->packet.opcode = ntohs(request->packet.opcode);
 			
 			if(request->packet.opcode == 1) {
-
+				//Do all the good stuff
+			} else if(request->packet.opcode == 2) {
+				printf("Uploading is not allowed, so why dont you make like a tree and GO AWAY!!?\n");
+				exit(1985);
+			} else if(request.packet.opcode == 4) {
+				//Continue the good stuff
+			} else {
+				printf("Move along, nothing to see here\n");
 			}
 		}
 	}
